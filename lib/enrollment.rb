@@ -1,6 +1,7 @@
 require 'pry'
 
 class Enrollment
+  attr_reader :enrollment_data
 
   def initialize(information)
     @enrollment_data = information
@@ -15,6 +16,10 @@ class Enrollment
 
   def number_formatter(number)
     number.to_s[0..4].to_f
+  end
+
+  def name
+    @enrollment_data[:name]
   end
 
   def kindergarten_participation_in_year(year)

@@ -1,7 +1,7 @@
 require 'pry'
 
 class District
-  # attr_reader
+  attr_reader :district
 
   def initialize(district)
     @district = district

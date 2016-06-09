@@ -30,7 +30,7 @@ class EnrollmentRepositoryTest < Minitest::Test
                 2013=>0.70263,
                 2014=>0.74118}
               }
-    assert_equal result, enrollments[0]
+    assert_equal result, enrollments[0].enrollment_data
   end
 
   def test_enrollment_repo_find_by_name
@@ -55,6 +55,7 @@ class EnrollmentRepositoryTest < Minitest::Test
                 2013=>0.70263,
                 2014=>0.74118}
               }
-    assert_equal result, er.find_by_name("Academy 20")
+    enrollment_object = er.find_by_name("Colorado")
+    assert_equal result, enrollment_object.enrollment_data
   end
 end
