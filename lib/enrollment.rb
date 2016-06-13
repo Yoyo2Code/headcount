@@ -37,4 +37,8 @@ class Enrollment
   def truncate(number)
     number.to_s[0..4].to_f
   end
+
+  def input_enrollment_data(inputted_data)
+    @enrollment_data.merge!(inputted_data)
+  end
 end

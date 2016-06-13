@@ -46,6 +46,7 @@ class DistrictRepository
   def insert_enrollment_data
     @collection.each do |district|
       district.enrollment = @enrollment_repo.find_by_name(district.name)
+      binding.pry
     end
   end
 
