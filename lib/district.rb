@@ -5,11 +5,9 @@ class District
 
   def initialize(district)
     @district = district
-    # binding.pry
   end
 
   def name
     @district[:name].upcase
   end
-
 end

@@ -7,12 +7,6 @@ require_relative 'district'
 class DistrictRepository
   attr_reader :collection
 
-  # def load_data(hash_path)
-  #   filepath = hash_path[:enrollment][:kindergarten]
-  #   CSV.foreach(filepath), headers: true, header_converters: :symbol.map do |row|
-  #     {name: row[:location], row[:timeframe].to_i => row[:data].to_f}
-  # end
-
   def initialize
     @collection = []
   end
@@ -33,16 +27,20 @@ class DistrictRepository
     group_names = districts.group_by do |row|
       row[:name]
     end
-    # @collection = group_names.map do |name,years|
-    #   merged = years.reduce({}, :merge)
-    #   merged.delete(:name)
-    #   District.new({ name: name, kindergarten_participation: merged })
-    # end
   end
 
   def find_by_name(name)
     @collection.detect do |enrollment_object|
-      enrollment_object.name == name
+      enrollment_object.name == name.upcase
+    end
+  end
+
+  def find_all_matching(name)
+    matching_districts = @collection.select do |enrollment_object|
+      enrollment_object.name.include?(name.upcase)
+    end
+    matching_districts.map do |district|
+      district.name
     end
   end
 end

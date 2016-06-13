@@ -4,7 +4,6 @@ require 'csv'
 require_relative 'enrollment'
 
 class EnrollmentRepository
-  # attr_accessor :collection
 
   def initialize
     @collection = []
@@ -33,8 +32,7 @@ class EnrollmentRepository
 
   def find_by_name(name)
     @collection.detect do |enrollment_object|
-      enrollment_object.name == name
+      enrollment_object.name.upcase == name.upcase
     end
   end
-
 end
