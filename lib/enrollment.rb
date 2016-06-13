@@ -22,6 +22,16 @@ class Enrollment
   end
 
   def graduation_rate_by_year
+    participation_data = @enrollment_data[:high_school_graduation]
+    hash = participation_data.map do |year, rate|
+      { year => truncate(rate) }
+    end.reduce({}, :merge)
+    hash.sort.to_h
+  end
+
+  def graduation_rate_in_year(year)
+    enrollment_participation = graduation_rate_by_year
+    enrollment_participation[year]
   end
 
   def truncate(number)
