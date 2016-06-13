@@ -21,7 +21,8 @@ class Enrollment
     enrollment_participation[year]
   end
 
-  def
+  def graduation_rate_by_year
+  end
 
   def truncate(number)
     number.to_s[0..4].to_f
