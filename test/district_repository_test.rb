@@ -8,18 +8,18 @@ class DistrictRepositoryTest < Minitest::Test
     assert_instance_of DistrictRepository, dr
   end
 
-  def test_load_district_repo_data
+  def test_can_load_district_repo_data
     dr = DistrictRepository.new
     dr.load_data({
       :enrollment => {
         :kindergarten => "./data/Kindergartners in full-day program.csv"
       }
     })
-    result = {:name => "Colorado"}
-    assert_equal result, dr.collection[0].district
+    result = "COLORADO"
+    assert_equal result, dr.collection[0].name
   end
 
-  def test_district_repo_find_by_name
+  def test_find_by_name
     dr = DistrictRepository.new
     dr.load_data({
       :enrollment => {
@@ -30,18 +30,7 @@ class DistrictRepositoryTest < Minitest::Test
     assert_equal "ACADEMY 20", district.name
   end
 
-  def test_district_repo_find_by_lowercase_name
-    dr = DistrictRepository.new
-    dr.load_data({
-      :enrollment => {
-        :kindergarten => "./data/Kindergartners in full-day program.csv"
-      }
-    })
-    district = dr.find_by_name("Colorado")
-    assert_equal "COLORADO", district.name
-  end
-
-  def test_district_repo_find_by_mixed_case_name
+  def test_find_by_name_is_case_insensitive
     dr = DistrictRepository.new
     dr.load_data({
       :enrollment => {
@@ -52,7 +41,7 @@ class DistrictRepositoryTest < Minitest::Test
     assert_equal "COLORADO", district.name
   end
 
-  def test_district_repo_find_by_unknown_name_returns_nil
+  def test_find_by_unknown_name_returns_nil
     dr = DistrictRepository.new
     dr.load_data({
       :enrollment => {
@@ -74,18 +63,7 @@ class DistrictRepositoryTest < Minitest::Test
     assert_equal ["COLORADO", "COLORADO SPRINGS 11"], district_array
   end
 
-  def test_find_all_matching_lowercase_name_fragment
-    dr = DistrictRepository.new
-    dr.load_data({
-      :enrollment => {
-        :kindergarten => "./data/Kindergartners in full-day program.csv"
-      }
-    })
-    district_array = dr.find_all_matching("colo")
-    assert_equal ["COLORADO", "COLORADO SPRINGS 11"], district_array
-  end
-
-  def test_find_all_matching_mixed_case_name_fragment
+  def test_find_all_matching_is_case_insensitive
     dr = DistrictRepository.new
     dr.load_data({
       :enrollment => {
@@ -105,5 +83,26 @@ class DistrictRepositoryTest < Minitest::Test
     })
     district_array = dr.find_all_matching("piz")
     assert_equal [], district_array
+  end
+
+  def test_load_data_creates_enrollment_repo
+    dr = DistrictRepository.new
+    dr.load_data({
+      :enrollment => {
+        :kindergarten => "./data/Kindergartners in full-day program.csv"
+      }
+    })
+    assert_instance_of EnrollmentRepository, dr.enrollment_repo
+  end
+
+  def test_load_data_creates_enrollment_repo_with_enrollment_data
+    dr = DistrictRepository.new
+    dr.load_data({
+      :enrollment => {
+        :kindergarten => "./data/Kindergartners in full-day program.csv"
+      }
+    })
+    district = dr.find_by_name("ACADEMY 20")
+    assert_equal 0.436, district.enrollment.kindergarten_participation_in_year(2010)
   end
 end

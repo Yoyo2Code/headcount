@@ -9,17 +9,17 @@ class Enrollment
 
   def kindergarten_participation_by_year
     participation_data = @enrollment_data[:kindergarten_participation]
-    participation_data.map do |year, data|
-      {year => number_formatter(data)}
+    participation_data.map do |year, rate|
+      { year => truncate(rate) }
     end.reduce({}, :merge)
   end
 
-  def number_formatter(number)
+  def truncate(number)
     number.to_s[0..4].to_f
   end
 
   def name
-    @enrollment_data[:name]
+    @enrollment_data[:name].upcase
   end
 
   def kindergarten_participation_in_year(year)

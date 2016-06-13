@@ -27,7 +27,7 @@ class EnrollmentRepositoryTest < Minitest::Test
     assert_instance_of EnrollmentRepository, er
   end
 
-  def test_load_enrollment_repository_data
+  def test_can_load_enrollment_repository_data
     er = EnrollmentRepository.new
     enrollments = er.load_data({
       :enrollment => {
@@ -48,18 +48,7 @@ class EnrollmentRepositoryTest < Minitest::Test
     assert_equal result, enrollment_object.enrollment_data
   end
 
-  def test_find_by_lowercase_name
-    er = EnrollmentRepository.new
-    er.load_data({
-      :enrollment => {
-        :kindergarten => "./data/Kindergartners in full-day program.csv"
-      }
-    })
-    enrollment_object = er.find_by_name("colorado")
-    assert_equal result, enrollment_object.enrollment_data
-  end
-
-  def test_find_by_mixed_case_name
+  def test_find_by_name_is_case_insensitive
     er = EnrollmentRepository.new
     er.load_data({
       :enrollment => {

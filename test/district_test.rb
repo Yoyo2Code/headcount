@@ -9,14 +9,8 @@ class DistrictTest < Minitest::Test
     assert_equal "ACADEMY 20", result
   end
 
-  def test_lowercase_name_returns_district_name
-    d = District.new({:name => "academy 20"})
-    result = d.name
-    assert_equal "ACADEMY 20", result
-  end
-
-  def test_mixed_case_name_returns_district_name
-    d = District.new({:name => "AcAdEmY 20"})
+  def test_name_is_case_insensitive
+    d = District.new({:name => "aCAdEmY 20"})
     result = d.name
     assert_equal "ACADEMY 20", result
   end
