@@ -1,9 +1,10 @@
 require 'pry'
 
 class Enrollment
-  attr_reader :enrollment_data
+  attr_accessor :name, :enrollment_data
 
   def initialize(information)
+    @name = information[:name].upcase
     @enrollment_data = information
   end
 
@@ -15,16 +16,14 @@ class Enrollment
     hash.sort.to_h
   end
 
-  def truncate(number)
-    number.to_s[0..4].to_f
-  end
-
-  def name
-    @enrollment_data[:name].upcase
-  end
-
   def kindergarten_participation_in_year(year)
     enrollment_participation = kindergarten_participation_by_year
     enrollment_participation[year]
+  end
+
+  def
+
+  def truncate(number)
+    number.to_s[0..4].to_f
   end
 end

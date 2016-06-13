@@ -13,8 +13,8 @@ class DistrictRepository
     @enrollment_repo = EnrollmentRepository.new
   end
 
-  def load_data(file_tree)
-    file = file_tree[:enrollment][:kindergarten]
+  def load_data(file_path_hash)
+    file = file_path_hash[:enrollment][:kindergarten]
     contents = CSV.read file, headers: true, header_converters: :symbol
     build_repos(contents)
     # district_names = contents.map do |row|
