@@ -3,17 +3,6 @@ require './lib/headcount_analyst'
 
 class HeadcountAnalystTest < Minitest::Test
 
-  def test_it_initializes_with_a_district_repository
-    dr = DistrictRepository.new
-    dr.load_data({
-      :enrollment => {
-        :kindergarten => "./data/Kindergartners in full-day program.csv"
-      }
-    })
-    ha = HeadcountAnalyst.new(dr)
-    assert_instance_of DistrictRepository, ha.district_repo
-  end
-
   def test_compare_average_participation_between_districts
     dr = DistrictRepository.new
     dr.load_data({
@@ -54,5 +43,33 @@ class HeadcountAnalystTest < Minitest::Test
                2014=>0.661
               }
     assert_equal result, variation_trend
+  end
+
+  def test_compare_kg_participation_to_hs_graduation
+    dr = DistrictRepository.new
+    dr.load_data({
+      :enrollment => {
+        :kindergarten => "./data/Kindergartners in full-day program.csv",
+        :high_school_graduation => "./data/High school graduation rates.csv"
+      }
+    })
+    ha = HeadcountAnalyst.new(dr)
+
+    comparison = ha.kindergarten_participation_against_high_school_graduation('ACADEMY 20')
+    assert_equal 0.641, comparison
+  end
+
+  def test_determine_correlation_between_kg_participation_and_hs_graduation
+    dr = DistrictRepository.new
+    dr.load_data({
+      :enrollment => {
+        :kindergarten => "./data/Kindergartners in full-day program.csv",
+        :high_school_graduation => "./data/High school graduation rates.csv"
+      }
+    })
+    ha = HeadcountAnalyst.new(dr)
+
+    comparison = ha.kindergarten_participation_correlates_with_high_school_graduation(for: 'ACADEMY 20')
+    assert comparison
   end
 end
