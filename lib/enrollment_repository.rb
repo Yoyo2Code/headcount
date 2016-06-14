@@ -4,44 +4,83 @@ require 'csv'
 require_relative 'enrollment'
 
 class EnrollmentRepository
+  attr_accessor :enrollment_collection
 
   def initialize
-    @collection = []
+    @enrollment_collection = {}
   end
 
   def load_data(file_tree)
-    file = file_tree[:enrollment][:kindergarten]
-    contents = CSV.read file, headers: true, header_converters: :symbol
+    kindergarten_file = file_tree[:enrollment][:kindergarten]
+
+    if !file_tree[:enrollment][:high_school_graduation].nil?
+      high_school_file = file_tree[:enrollment][:high_school_graduation]
+      high_school_hashes = load_path(high_school_file)
+    end
+
+    kindergarten_hashes = load_path(kindergarten_file)
+
+    kindergarten_hashes.each_key do |district_name|
+      participation_hash = kindergarten_hashes[district_name]
+      if !high_school_hashes.nil?
+        graduation_hash = high_school_hashes[district_name]
+        enrollment = Enrollment.new({ :name => district_name, :kindergarten_participation => participation_hash, :high_school_graduation => graduation_hash })
+      else
+        enrollment = Enrollment.new({ :name => district_name, :kindergarten_participation => participation_hash })
+      end
+      @enrollment_collection[district_name] = enrollment
+    end
+    # contents = CSV.read kindergarten_file, headers: true, header_converters: :symbol
+    # build_repo(contents)
+  end
+
+  def load_path(data_file)
+    contents = CSV.read data_file, headers: true, header_converters: :symbol
     build_repo(contents)
-    # enrollments = contents.map do |row|
-    #   { :name => row[:location],
-    #     row[:timeframe].to_i => row[:data].to_f }
-    # end
-    # group_by_district(enrollments)
   end
 
   def build_repo(contents)
-    enrollments = contents.map do |row|
-      { :name => row[:location],
-        row[:timeframe].to_i => row[:data].to_f }
-    end
-    group_by_district(enrollments)
-  end
+    district_hashes = {}
+    contents.each do |row|
+      district_name = row[:location].upcase
+      if !district_hashes.has_key?(district_name)
+        district_hashes[district_name] = {}
+      end
 
-  def group_by_district(enrollments)
-    districts_by_name = enrollments.group_by do |row|
-      row[:name]
+      if row[:data] != "N/A"
+        year = row[:timeframe].to_i
+        rate = row[:data].to_f
+        district_hashes.fetch(district_name)[year] = rate
+      end
     end
-    @collection = districts_by_name.map do |key,value|
-      merged = value.reduce({}, :merge)
-      merged.delete(:name)
-      Enrollment.new({ name: key, kindergarten_participation: merged })
-    end
+    return district_hashes
   end
 
   def find_by_name(name)
-    @collection.detect do |enrollment_object|
-      enrollment_object.name == name.upcase
-    end
+    @enrollment_collection[name.upcase]
   end
+
+  # def group_by_district(enrollments)
+  #   districts_by_name = enrollments.group_by do |row|
+  #     row[:name]
+  #   end
+  #   # binding.pry
+  #   districts_by_name.each do |key,value|
+  #     merged = value.reduce({}, :merge)
+  #     merged.delete(:name)
+  #     # binding.pry
+  #     @enrollment_collection[key] = merged
+  #     # Enrollment.new({ name: key, kindergarten_participation: merged })
+  #   end
+  #   # binding.pry
+  # end
+
+# enrollment_object.enrollment_data[:kindergarten_participation]
+
+  # def find_by_name(name)
+  #   # binding.pry
+  #   @enrollment_collection.detect do |enrollment_object|
+  #     enrollment_object.name == name.upcase
+  #   end
+  # end
 end

@@ -1,7 +1,7 @@
 require 'pry'
 
 class Enrollment
-  attr_accessor :name, :enrollment_data
+  attr_reader :name, :enrollment_data
 
   def initialize(information)
     @name = information[:name].upcase

@@ -2,14 +2,12 @@ require 'pry'
 require_relative 'enrollment'
 
 class District
-  attr_accessor :name, :enrollment
+  attr_reader :name
+  attr_accessor :enrollment
 
   def initialize(district)
     @name = district[:name].upcase
-    @enrollment = nil
+    @enrollment = district[:enrollment]
   end
-
-  # def name
-  #   @district[:name].upcase
-  # end
+  
 end
