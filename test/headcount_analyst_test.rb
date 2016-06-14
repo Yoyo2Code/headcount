@@ -73,7 +73,7 @@ class HeadcountAnalystTest < Minitest::Test
     assert comparison
   end
 
-  def test_determine_correlation_between_kg_participation_and_hs_graduation
+  def test_determine_correlation_between_kg_participation_and_hs_graduation_statewide
     dr = DistrictRepository.new
     dr.load_data({
       :enrollment => {
@@ -84,6 +84,20 @@ class HeadcountAnalystTest < Minitest::Test
     ha = HeadcountAnalyst.new(dr)
 
     comparison = ha.kindergarten_participation_correlates_with_high_school_graduation(for: 'STATEWIDE')
+    refute comparison
+  end
+
+  def test_correlation_between_kg_and_hs_across_multiple_districts
+    dr = DistrictRepository.new
+    dr.load_data({
+      :enrollment => {
+        :kindergarten => "./data/Kindergartners in full-day program.csv",
+        :high_school_graduation => "./data/High school graduation rates.csv"
+      }
+    })
+    ha = HeadcountAnalyst.new(dr)
+
+    comparison = ha.kindergarten_participation_correlates_with_high_school_graduation(across: ['ACADEMY 20', 'YUMA SCHOOL DISTRICT 1', 'CHERRY CREEK 5'])
     refute comparison
   end
 end

@@ -73,13 +73,20 @@ class HeadcountAnalyst
 
   def correlation_for_statewide
     correlated = district_hash.keys.map do |district|
-      kindergarten_participation_correlates_with_high_school_graduation(:for=>district) unless district == 'COLORADO'
+      correlation_for_single_district(district) unless district == 'COLORADO'
     end
     correlated.compact.count / (district_hash.count - 1) > 0.7 ? true : false
   end
 
   def correlation_for_single_district(district_name)
     return true if kindergarten_participation_against_high_school_graduation(district_name).between?(0.6, 1.5)
+  end
+
+  def correlation_across_districts(district_array)
+    correlated = district_array.map do |district|
+      correlation_for_single_district(district)
+    end
+    correlated.compact.count / (district_array.count) > 0.7 ? true : false
   end
 
   def number_of_districts
