@@ -9,5 +9,5 @@ class District
     @name = district[:name].upcase
     @enrollment = district[:enrollment]
   end
-  
+
 end
