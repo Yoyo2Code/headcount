@@ -47,13 +47,10 @@ class EnrollmentRepository
       if district_hashes.has_key?(district_name) == false
         district_hashes[district_name] = {}
       end
-
-      if row[:data] != "N/A"
         year = row[:timeframe].to_i
         rate = row[:data].to_f
         district_hashes.fetch(district_name)[year] = rate
       end
-    end
     return district_hashes
   end
 

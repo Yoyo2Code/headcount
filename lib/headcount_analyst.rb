@@ -43,7 +43,6 @@ class HeadcountAnalyst
 
   def calculate_annual_variations(original, comparison)
     result = {}
-    # binding.pry
     original.each_key do |key|
       result[key] = truncate(original[key] / comparison[key])
     end
@@ -51,16 +50,43 @@ class HeadcountAnalyst
   end
 
   def kindergarten_participation_against_high_school_graduation(district_name)
-    kindergarten_variation = kindergarten_participation_rate_variation(district_name, :against=>'COLORADO')
-    graduation_variation = graduation_rate_variation(district_name, :against=>'COLORADO')
+    kg_variation = kindergarten_participation_rate_variation(district_name, :against=>'COLORADO')
+    gd_variation = graduation_rate_variation(district_name, :against=>'COLORADO')
 
-    truncate(kindergarten_variation / graduation_variation)
+    truncate(kg_variation / gd_variation)
   end
 
   def kindergarten_participation_correlates_with_high_school_graduation(name)
+    if name.key?(:for)
+      district_name = name[:for]
+      if district_name == 'STATEWIDE'
+        correlation_for_statewide
+      else
+        correlation_for_single_district(district_name)
+      end
+
+    else
+      district_array = name[:across]
+      correlation_across_districts(district_array)
+    end
+  end
+
+  def correlation_for_statewide
+    correlated = district_hash.keys.map do |district|
+      kindergarten_participation_correlates_with_high_school_graduation(:for=>district) unless district == 'COLORADO'
+    end
+    correlated.compact.count / (district_hash.count - 1) > 0.7 ? true : false
+  end
+
+  def correlation_for_single_district(district_name)
+    return true if kindergarten_participation_against_high_school_graduation(district_name).between?(0.6, 1.5)
+  end
+
+  def number_of_districts
+    district_hash.count
   end
 
   def truncate(number)
-    number.to_s[0..4].to_f
+    number.nan? == false ? number.to_s[0..4].to_f : 0
   end
 end
