@@ -15,11 +15,12 @@ class StatewideTestRepository
     def load_path(data_file)
       data_file.map do |key,file|
       contents = CSV.read file, headers: true, header_converters: :symbol
-      if key == :third_grade || :eighth_grade
+      if key == :third_grade || key == :eighth_grade
         grade_repo = group_grade_repo(contents)
         build_repo(grade_repo)
-      # elsif key == :math || :reading || :writing
-      #   group_ethnicity_repo(contents)
+      elsif key === :math || key == :reading || key == :writing
+        binding.pry
+        group_ethnicity_repo(contents)
       end
     end
   end
@@ -64,7 +65,10 @@ class StatewideTestRepository
     end
 
     def group_ethnicity_repo(contents)
-
+      contents.group_by do |search|
+        search[:Race_Ethnicity]
+      end
+      binding.pry
     end
 
     def truncate(number)
