@@ -57,28 +57,4 @@ class EnrollmentRepository
   def find_by_name(name)
     @enrollment_collection[name.upcase]
   end
-
-  # def group_by_district(enrollments)
-  #   districts_by_name = enrollments.group_by do |row|
-  #     row[:name]
-  #   end
-  #   # binding.pry
-  #   districts_by_name.each do |key,value|
-  #     merged = value.reduce({}, :merge)
-  #     merged.delete(:name)
-  #     # binding.pry
-  #     @enrollment_collection[key] = merged
-  #     # Enrollment.new({ name: key, kindergarten_participation: merged })
-  #   end
-  #   # binding.pry
-  # end
-
-# enrollment_object.enrollment_data[:kindergarten_participation]
-
-  # def find_by_name(name)
-  #   # binding.pry
-  #   @enrollment_collection.detect do |enrollment_object|
-  #     enrollment_object.name == name.upcase
-  #   end
-  # end
 end
