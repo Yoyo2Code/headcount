@@ -1,7 +1,7 @@
+require_relative 'enrollment'
 require 'pp'
 require 'pry'
 require 'csv'
-require_relative 'enrollment'
 
 class EnrollmentRepository
   attr_accessor :enrollment_collection
