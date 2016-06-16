@@ -45,7 +45,8 @@ class StatewideTest
 
   def proficient_for_subject_by_grade_in_year(subject, grade, year)
     if valid_subject?(subject) && valid_grade?(grade) && valid_year?(year)
-      get_data_by_grade_and_year_and_subject(subject, grade, year)
+      clean_subject = subject.capitalize
+      get_data_by_grade_and_year_and_subject(clean_subject, grade, year)
     else
       fail UnknownDataError
     end
