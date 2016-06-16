@@ -23,6 +23,7 @@ class DistrictRepository
                                 :enrollment => enrollment_object })
       @district_collection[district_name] = district
     end
+    binding.pry
   end
 
   def find_by_name(name)

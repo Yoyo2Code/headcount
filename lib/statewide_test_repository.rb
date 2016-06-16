@@ -17,17 +17,16 @@ class StatewideTestRepository
       contents = CSV.read file, headers: true, header_converters: :symbol
       if key == :third_grade || key == :eighth_grade
         grade_repo = group_grade_repo(contents)
-        build_repo(grade_repo)
+        build_repo(grade_repo, key)
       elsif key === :math || key == :reading || key == :writing
-        binding.pry
-        group_ethnicity_repo(contents)
+        group_ethnicity_repo(contents, key)
       end
     end
   end
 
-    def build_repo(testing_data_by_district)
+    def build_repo(testing_data_by_district, key)
       @statewide_test_repository = testing_data_by_district.map do |district|
-        StatewideTest.new(district)
+        StatewideTest.new(key district)
       end
     end
 
@@ -37,10 +36,10 @@ class StatewideTestRepository
       end
         districts = district_years.map do |district|
           name = district[:location]
-          subject = district[:score]
+          subject = district[:score].to_sym
           data = truncate(district[:data].to_f)
           year = district[:timeframe].to_i
-            {name: name, year => {subject.to_sym => data}}
+            {name: name, year => {subject => data}}
         end
           districts_by_name = districts.group_by do |contents|
             contents[:name]
@@ -64,22 +63,38 @@ class StatewideTestRepository
           # binding.pry
     end
 
-    def group_ethnicity_repo(contents)
-      contents.group_by do |search|
-        search[:Race_Ethnicity]
+    def group_ethnicity_repo(contents, key)
+      district_years = contents.sort_by do |contents|
+        contents[:timeframe]
       end
-      binding.pry
+        csv_data = district_years.map do |something|
+          ethnicity = something[:race_ethnicity]
+          name = something[:location]
+          data = truncate(something[:data].to_f)
+          year = something[:timeframe].to_i
+            {name: name, race: ethnicity, year => data}
+          end
+          districts_by_name = csv_data.group_by do |contents|
+            contents[:name]
+          end
+            districts_by_name.map do |name, data|
+              by_race = data.group_by do |race_data|
+                race_data[:race]
+            end
+              final_race_data = by_race.map do |name_of_race, race_data|
+                  data_by_race = race_data.each do |district_data|
+                    district_data.delete(:name)
+                    district_data.delete(:race)
+                  end.reduce({}, :merge)
+                    symbol = name_of_race.split("/").last.gsub(/\s+/,"_").downcase.to_sym
+                    {symbol => data_by_race}
+              end
+                  {name: name, race: final_race_data }
+            end
+          binding.pry
     end
 
     def truncate(number)
       number.to_s[0..4].to_f
-    end
-
-    def proficient_by_grade(grade)
-
-    end
-
-    def bad_data?(district)
-
     end
   end

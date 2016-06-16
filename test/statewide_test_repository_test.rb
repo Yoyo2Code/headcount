@@ -32,8 +32,8 @@ class StatewideTestRepositoryTest < Minitest::Test
         :writing => "./data/Average proficiency on the CSAP_TCAP by race_ethnicity_ Writing.csv"
         }
       })
-      str = str.find_by_name("ACADEMY 20")
+      result = str.find_by_name("ACADEMY 20")
 
-      assert_instance_of StatewideTest, str
+      assert_instance_of StatewideTest, result
   end
 end
