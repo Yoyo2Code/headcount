@@ -1,27 +1,40 @@
 require 'pry'
 
 class Enrollment
+  attr_reader :name, :enrollment_data
 
   def initialize(information)
+    @name = information[:name].upcase
     @enrollment_data = information
   end
 
   def kindergarten_participation_by_year
     participation_data = @enrollment_data[:kindergarten_participation]
-    participation_data.map do |year, data|
-      {year => number_formatter(data)}
+    hash = participation_data.map do |year, rate|
+      { year => truncate(rate) }
     end.reduce({}, :merge)
-  end
-
-  def number_formatter(number)
-    number.to_s[0..4].to_f
+    hash.sort.to_h
   end
 
   def kindergarten_participation_in_year(year)
     enrollment_participation = kindergarten_participation_by_year
     enrollment_participation[year]
   end
+
+  def graduation_rate_by_year
+    participation_data = @enrollment_data[:high_school_graduation]
+    hash = participation_data.map do |year, rate|
+      { year => truncate(rate) }
+    end.reduce({}, :merge)
+    hash.sort.to_h
+  end
+
+  def graduation_rate_in_year(year)
+    enrollment_participation = graduation_rate_by_year
+    enrollment_participation[year]
+  end
+
+  def truncate(number)
+    number.to_s[0..4].to_f
+  end
 end
-
-
-# e = Enrollment.new({:name => "ACADEMY 20", :kindergarten_participation => {2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}})

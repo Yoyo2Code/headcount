@@ -1,15 +1,13 @@
+require_relative 'enrollment'
 require 'pry'
 
 class District
-  # attr_reader
+  attr_reader :name, :statewide_test
+  attr_accessor :enrollment
 
   def initialize(district)
-    @district = district
-    # binding.pry
+    @name = district[:name].upcase
+    @enrollment = district[:enrollment]
+    @statewide_test = district[:statewide_testing]
   end
-
-  def name
-    @district[:name].upcase
-  end
-
 end
