@@ -11,6 +11,8 @@ class DistrictRepository
     @district_collection = {}
   end
 
+# some fun stuff
+
   def load_data(file_tree)
     @enrollment_repo = EnrollmentRepository.new
     @statewide_test_repo = StatewideTestRepository.new
