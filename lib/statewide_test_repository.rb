@@ -107,7 +107,11 @@ class StatewideTestRepository
       end
       subjects_with_year = grouped_by_years.map do |year, yearly_data|
         subject_data = yearly_data.map do |today|
-          today.values.first
+          downcased_data = today.values.first.map do |key, value|
+            new_key = key.downcase
+            {new_key => value}
+          end
+          downcased_data.first
         end.reduce({}, :merge).sort.to_h
         {year => subject_data}
       end.reduce({}, :merge)

@@ -9,22 +9,22 @@ class StatewideTestTest < Minitest::Test
     {:name => "ACADEMY 20",
 
     :third_grade =>
-      {2008=>{:Math=>0.857, :Reading=>0.866, :Writing=>0.671},
-       2009=>{:Math=>0.824, :Reading=>0.862, :Writing=>0.706},
-       2010=>{:Math=>0.849, :Reading=>0.864, :Writing=>0.662},
-       2011=>{:Math=>0.819, :Reading=>0.867, :Writing=>0.678},
-       2012=>{:Reading=>0.87, :Math=>0.83, :Writing=>0.655},
-       2013=>{:Math=>0.855, :Reading=>0.859, :Writing=>0.668},
-       2014=>{:Math=>0.834, :Reading=>0.831, :Writing=>0.639}},
+      {2008=>{:math=>0.857, :reading=>0.866, :writing=>0.671},
+       2009=>{:math=>0.824, :reading=>0.862, :writing=>0.706},
+       2010=>{:math=>0.849, :reading=>0.864, :writing=>0.662},
+       2011=>{:math=>0.819, :reading=>0.867, :writing=>0.678},
+       2012=>{:reading=>0.87, :math=>0.83, :writing=>0.655},
+       2013=>{:math=>0.855, :reading=>0.859, :writing=>0.668},
+       2014=>{:math=>0.834, :reading=>0.831, :writing=>0.639}},
 
     :eighth_grade =>
-      {2008=>{:Math=>0.64, :Reading=>0.843, :Writing=>0.734},
-      2009=>{:Math=>0.656, :Reading=>0.825, :Writing=>0.701},
-      2010=>{:Math=>0.672, :Reading=>0.863, :Writing=>0.754},
-      2011=>{:Reading=>0.832, :Math=>0.653, :Writing=>0.745},
-      2012=>{:Math=>0.681, :Writing=>0.738, :Reading=>0.833},
-      2013=>{:Math=>0.661, :Reading=>0.852, :Writing=>0.75},
-      2014=>{:Math=>0.684, :Reading=>0.827, :Writing=>0.747}},
+      {2008=>{:math=>0.64, :reading=>0.843, :writing=>0.734},
+      2009=>{:math=>0.656, :reading=>0.825, :writing=>0.701},
+      2010=>{:math=>0.672, :reading=>0.863, :writing=>0.754},
+      2011=>{:reading=>0.832, :math=>0.653, :writing=>0.745},
+      2012=>{:math=>0.681, :writing=>0.738, :reading=>0.833},
+      2013=>{:math=>0.661, :reading=>0.852, :writing=>0.75},
+      2014=>{:math=>0.684, :reading=>0.827, :writing=>0.747}},
 
     :math =>
       {:all_students=>{2011=>0.68, 2012=>0.689, 2013=>0.696, 2014=>0.699},
@@ -59,13 +59,13 @@ class StatewideTestTest < Minitest::Test
 
   def test_proficient_by_grade
     expected =
-    { 2008=>{:Math=>0.857, :Reading=>0.866, :Writing=>0.671},
-      2009=>{:Math=>0.824, :Reading=>0.862, :Writing=>0.706},
-      2010=>{:Math=>0.849, :Reading=>0.864, :Writing=>0.662},
-      2011=>{:Math=>0.819, :Reading=>0.867, :Writing=>0.678},
-      2012=>{:Reading=>0.87, :Math=>0.83, :Writing=>0.655},
-      2013=>{:Math=>0.855, :Reading=>0.859, :Writing=>0.668},
-      2014=>{:Math=>0.834, :Reading=>0.831, :Writing=>0.639}
+    { 2008=>{:math=>0.857, :reading=>0.866, :writing=>0.671},
+      2009=>{:math=>0.824, :reading=>0.862, :writing=>0.706},
+      2010=>{:math=>0.849, :reading=>0.864, :writing=>0.662},
+      2011=>{:math=>0.819, :reading=>0.867, :writing=>0.678},
+      2012=>{:reading=>0.87, :math=>0.83, :writing=>0.655},
+      2013=>{:math=>0.855, :reading=>0.859, :writing=>0.668},
+      2014=>{:math=>0.834, :reading=>0.831, :writing=>0.639}
     }
 
      assert_equal expected, @statewide_test.proficient_by_grade(3)
