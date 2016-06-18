@@ -15,7 +15,6 @@ class StatewideTest
 
   def proficient_by_grade(grade)
     if grade == 3
-      # binding.pry
       third_grade
     elsif grade == 8
       eighth_grade
@@ -45,8 +44,7 @@ class StatewideTest
 
   def proficient_for_subject_by_grade_in_year(subject, grade, year)
     if valid_subject?(subject) && valid_grade?(grade) && valid_year?(year)
-      clean_subject = subject.capitalize
-      get_data_by_grade_and_year_and_subject(clean_subject, grade, year)
+      get_data_by_grade_and_year_and_subject(subject, grade, year)
     else
       fail UnknownDataError
     end
@@ -65,7 +63,6 @@ class StatewideTest
       if third_grade[year][subject] == 0.0
         "N/A"
       else
-        # binding.pry
         third_grade[year][subject]
       end
     elsif grade == 8
