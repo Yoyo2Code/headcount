@@ -1,4 +1,4 @@
-require './lib/statewide_test'
+require_relative 'statewide_test'
 require 'pp'
 require 'csv'
 require 'pry'

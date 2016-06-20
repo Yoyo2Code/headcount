@@ -1,3 +1,5 @@
+require 'pry'
+
 class EconomicProfile
   attr_reader :profile_data
 
@@ -43,7 +45,7 @@ class EconomicProfile
     result = lunch_data.find do |year, data|
       year == year_input
     end
-    result.last[:percentage]
+    result.last[:total]
   end
 
   def calculate_sum(data)
@@ -53,6 +55,19 @@ class EconomicProfile
   end
 
   def median_household_income_average
-    
+    total_years = 0
+    total = 0
+    profile_data[:median_household_income].each do |years, data|
+      total_years += 1 if years != nil
+      total += data
+    end
+    total/total_years
+  end
+
+  def title_i_in_year(year_search)
+    r = profile_data[:title_i].find do |d|
+          d.first == year_search
+    end
+    r.last
   end
 end

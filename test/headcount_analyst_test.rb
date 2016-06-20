@@ -1,5 +1,5 @@
 require_relative 'test_helper'
-require './lib/headcount_analyst'
+require_relative '../lib/headcount_analyst'
 
 class HeadcountAnalystTest < Minitest::Test
 

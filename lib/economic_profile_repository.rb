@@ -69,6 +69,5 @@ class EconomicProfileRepository
     @economic_repo = economic_repo.map do |data_by_district|
       EconomicProfile.new(data_by_district)
     end
-    binding.pry
   end
 end

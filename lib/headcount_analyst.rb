@@ -1,5 +1,5 @@
-require 'pry'
 require_relative 'district_repository'
+require 'pry'
 
 class HeadcountAnalyst
   attr_reader :district_hash

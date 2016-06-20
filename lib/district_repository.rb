@@ -1,8 +1,8 @@
+require_relative 'enrollment_repository'
+require_relative 'district'
 require 'pp'
 require 'pry'
 require 'csv'
-require_relative 'district'
-require_relative 'enrollment_repository'
 
 
 class DistrictRepository
