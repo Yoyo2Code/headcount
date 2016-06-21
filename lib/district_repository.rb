@@ -5,15 +5,16 @@ require 'pry'
 require 'csv'
 
 class DistrictRepository
+  attr_reader :statewide_test_repo
   attr_accessor :district_collection
 
   def initialize
     @district_collection = {}
+    @enrollment_repo = EnrollmentRepository.new
+    @statewide_test_repo = StatewideTestRepository.new
   end
 
   def load_data(file_tree)
-    @enrollment_repo = EnrollmentRepository.new
-    @statewide_test_repo = StatewideTestRepository.new
     file_tree.each do |file|
       if file[0] == :enrollment
         @enrollment_repo.load_data({ :enrollment => file_tree[:enrollment] })

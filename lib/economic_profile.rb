@@ -1,3 +1,4 @@
+require_relative 'data_errors'
 require 'pry'
 
 class EconomicProfile
@@ -5,6 +6,10 @@ class EconomicProfile
 
   def initialize(profile_data)
     @profile_data = profile_data
+  end
+
+  def name
+    @profile_data[:name].upcase
   end
 
   def household_income
@@ -24,14 +29,20 @@ class EconomicProfile
       x = years.first
       y = years.last
       wanted_year.between?(x,y) ? amount : nil
-    end.compact
-    calculate_sum(result)/result.count
+    end
+    result.compact if result.first != nil
+      if result.first != nil
+        calculate_sum(result)/result.count
+      end
   end
 
   def median_household_income_in_year(year)
     result = find_year_data(year)
-    result == [] ? raise(UknownDataError) : result
-    #need work
+    if result == []
+      fail UnknownDataError
+    else
+      result
+    end
   end
 
   def children_in_poverty_in_year(year)
@@ -42,6 +53,13 @@ class EconomicProfile
   end
 
   def free_or_reduced_price_lunch_percentage_in_year(year_input)
+    result = lunch_data.find do |year, data|
+      year == year_input
+    end
+    result.last[:percentage]
+  end
+
+  def free_or_reduced_price_lunch_number_in_year(year_input)
     result = lunch_data.find do |year, data|
       year == year_input
     end
