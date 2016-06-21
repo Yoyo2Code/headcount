@@ -15,6 +15,7 @@ module DataLoader
   end
 
   def load_childhood_poverty(key, contents)
+    # formatted = make_childhood_poverty_data(contents)
     formatted = contents.map do |row|
       name   = name(row)
       year   = time(row).to_i
@@ -29,6 +30,14 @@ module DataLoader
       {name: name, key => formatted_data}
     end
   end
+
+  # def make_childhood_poverty_data(contents)
+  #   contents.map do |row|
+  #     name   = name(row)
+  #     year   = time(row).to_i
+  #     data = float_data(row)
+  #     {name: name, year => data}
+  # end
 
   def load_free_or_reduced_lunch(key, contents)
     formatted_data = contents.map do |row|

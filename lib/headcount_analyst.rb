@@ -97,29 +97,4 @@ class HeadcountAnalyst
   def truncate(number)
     number.nan? == false ? number.to_s[0..4].to_f : 0
   end
-
-  def top_statewide_test_year_over_year_growth(data)
-    subject = data[:subject]
-    grade = data[:grade]
-    yoy = @district_hash.map do |name, districts|
-      d = districts.statewide_test.eight_grade if grade == 8
-      d = districts.statewide_test.third_grade if grade == 3
-      improvement = test_stats(d, subject)
-      [name, improvement]
-    end
-    yoy.sort_by do |name,improvement|
-      improvement
-    end.reverse
-  end
-
-  def test_stats(data, subject)
-    total = 0
-    yearly = nil
-    r = data.each do |year,tests|
-        now    = tests[subject]
-        total += now - yearly if yearly != nil
-        yearly = now
-    end
-    total
-  end
 end

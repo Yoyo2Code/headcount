@@ -29,11 +29,14 @@ class EconomicProfile
       x = years.first
       y = years.last
       wanted_year.between?(x,y) ? amount : nil
+    end.compact
+    check_to_calculate_sum(result)
+  end
+
+  def check_to_calculate_sum(result)
+    if result.first != nil
+      calculate_sum(result)/result.count
     end
-    result.compact if result.first != nil
-      if result.first != nil
-        calculate_sum(result)/result.count
-      end
   end
 
   def median_household_income_in_year(year)
@@ -85,7 +88,6 @@ class EconomicProfile
   def title_i_in_year(year_search)
     r = profile_data[:title_i].find do |d|
           d.first == year_search
-    end
-    r.last
+    end.last
   end
 end

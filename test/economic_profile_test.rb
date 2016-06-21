@@ -2,6 +2,7 @@ require_relative 'test_helper'
 require_relative '../lib/economic_profile'
 
 class EconomicProfileTest < Minitest::Test
+
   def test_instance_of_economic_profile
        ec = make_economic_profile
        assert_instance_of EconomicProfile, ec
@@ -37,13 +38,6 @@ class EconomicProfileTest < Minitest::Test
     ep     = make_economic_profile
     query  = ep.find_year_data(2008)
     result = 55000
-    assert_equal result, query
-  end
-
-  def test_find_year_with_bad_data_returns_nil
-    ep     = make_economic_profile
-    query  = ep.find_year_data(2018)
-    result = nil
     assert_equal result, query
   end
 
