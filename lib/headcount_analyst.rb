@@ -6,6 +6,7 @@ class HeadcountAnalyst
 
   def initialize(district_repo)
     @district_hash = district_repo.district_collection
+    @statewide_repo = district_repo.statewide_test_repo
   end
 
   def kindergarten_participation_rate_variation(district1, district2)
@@ -67,7 +68,6 @@ class HeadcountAnalyst
 
     else
       district_array = name[:across]
-      # binding.pry
       correlation_across_districts(district_array)
     end
   end
