@@ -40,14 +40,18 @@ class StatewideTestRepository
     organized_repo = combined_repo.group_by do |hash|
       hash[:name]
     end
-    final_repo = organized_repo.map do |name, value|
+    final_repo = create_repo_data_without_name(organized_repo)
+    build_repo(final_repo)
+  end
+
+  def create_repo_data_without_name(repo_data)
+    repo_data.map do |name, value|
       nameless_data = value.each do |data|
         data.delete(:name)
         data
       end.reduce({}, :merge)
       {name: name}.merge(nameless_data)
     end
-    build_repo(final_repo)
   end
 
   def build_repo(final_repo)
@@ -70,69 +74,109 @@ class StatewideTestRepository
 
   def group_grade_repo(contents, key)
     districts_by_year = sort_by_year(contents, key)
-    all_district_data = districts_by_year.map do |district|
+    all_district_data = sort_district_data(districts_by_year)
+    districts_by_name = sort_by_name(all_district_data)
+
+    create_grades_hash(districts_by_name, key)
+  end
+
+  def sort_district_data(districts_by_year)
+    districts_by_year.map do |district|
       name = district[:location]
       subject = district[:score]
       data = truncate(district[:data].to_f)
       year = district[:timeframe].to_i
       {name: name, year => {subject.to_sym => data}}
     end
-    districts_by_name = sort_by_name(all_district_data)
-
-    create_grades_hash(districts_by_name, key)
   end
 
   def group_subject_repo(contents, key)
     districts_by_year = sort_by_year(contents, key)
-    all_district_data = districts_by_year.map do |district|
+    all_district_data = format_district_data(districts_by_year)
+    districts_by_name = sort_by_name(all_district_data)
+
+    create_subject_hash(districts_by_name, key)
+  end
+
+  def format_district_data(districts_by_year)
+    districts_by_year.map do |district|
       name = district[:location]
       ethnicity = district[:race_ethnicity]
       data = truncate(district[:data].to_f)
       year = district[:timeframe].to_i
       {name: name, race: ethnicity, year => data}
     end
-    districts_by_name = sort_by_name(all_district_data)
-
-    create_subject_hash(districts_by_name, key)
   end
 
   def create_grades_hash(districts_by_name, key)
     district_testing_data = districts_by_name.map do |name, data|
-      data_without_name = data.each do |grade_data|
-        grade_data.delete(:name)
-        grade_data
-      end
-      grouped_by_years = data_without_name.group_by do |scores|
-        scores.keys.first
-      end
-      subjects_with_year = grouped_by_years.map do |year, yearly_data|
-        subject_data = yearly_data.map do |today|
-          downcased_data = today.values.first.map do |key, value|
-            new_key = key.downcase
-            {new_key => value}
-          end
-          downcased_data.first
-        end.reduce({}, :merge).sort.to_h
+      data_without_name   = delete_district_name(data)
+      grouped_by_years    = group_by_year(data_without_name)
+      subjects_with_year  = grouped_by_years.map do |year, yearly_data|
+      subject_data        = create_subject_data_hash(yearly_data)
         {year => subject_data}
       end.reduce({}, :merge)
       {name: name, key => subjects_with_year}
     end
   end
 
+  def delete_district_name(districts)
+    districts.each do |grade_data|
+      grade_data.delete(:name)
+      grade_data
+    end
+  end
+
+  def create_subject_data_hash(yearly_data)
+    yearly_data.map do |today|
+      downcased_data = downcase_data(today)
+      downcased_data.first
+    end.reduce({}, :merge).sort.to_h
+  end
+
+  def group_by_year(data_without_name)
+    data_without_name.group_by do |scores|
+      scores.keys.first
+    end
+  end
+
+  def downcase_data(data)
+    data.values.first.map do |key, value|
+      new_key = key.downcase
+      {new_key => value}
+    end
+  end
+
   def create_subject_hash(districts_by_name, key)
     district_testing_data = districts_by_name.map do |name, data|
-      by_race = data.group_by do |races|
-        races[:race]
-      end
-      all_race_data = by_race.map do |race_name, race_data|
-        data_by_race = race_data.each do |district_data|
-          district_data.delete(:name)
-          district_data.delete(:race)
-        end.reduce({}, :merge)
-        symbol = race_name.split("/").last.gsub(/\s+/,"_").downcase.to_sym
-        {symbol => data_by_race}
+                  by_race = group_by_race(data)
+      all_race_data    = create_race_data(by_race)
+            {name: name, key => all_race_data}
+    end
+  end
+
+  def create_race_data(data)
+    data.map do |race_name, race_data|
+        data_by_race = delete_name_and_race(race_data)
+        symbol       = create_race_symbol(race_name)
+          {symbol => data_by_race}
       end.reduce({}, :merge)
-      {name: name, key => all_race_data}
+  end
+
+  def create_race_symbol(race_name)
+    race_name.split("/").last.gsub(/\s+/,"_").downcase.to_sym
+  end
+
+  def delete_name_and_race(race_data)
+    race_data.each do |district_data|
+      district_data.delete(:name)
+      district_data.delete(:race)
+    end.reduce({}, :merge)
+  end
+
+  def group_by_race(data)
+    data.group_by do |races|
+      races[:race]
     end
   end
 

@@ -11,27 +11,41 @@ class EnrollmentRepository
   end
 
   def load_data(file_tree)
-    kindergarten_file = file_tree[:enrollment][:kindergarten]
+    school_data = []
+    kindergarten_file  = file_tree[:enrollment][:kindergarten]
+    school_data << kindergarten_hashes  = load_path(kindergarten_file)
 
     if file_tree[:enrollment][:high_school_graduation].nil? == false
       high_school_file = file_tree[:enrollment][:high_school_graduation]
-      high_school_hashes = load_path(high_school_file)
+      school_data << high_school_hashes = load_path(high_school_file)
     end
+      create_enrollments(school_data)
+  end
 
-    kindergarten_hashes = load_path(kindergarten_file)
+  def create_enrollments(school_hashes)
+    school_hashes.first.each_key do |district_name|
+      participation_hash = school_hashes.first[district_name]
+      e = create_enrollment(school_hashes, district_name, participation_hash)
+      @enrollment_collection[district_name] = e
+    end
+  end
 
-    kindergarten_hashes.each_key do |district_name|
-      participation_hash = kindergarten_hashes[district_name]
-      if high_school_hashes.nil? == false
-        graduation_hash = high_school_hashes[district_name]
-        enrollment = Enrollment.new({ :name => district_name,
-                :kindergarten_participation => participation_hash,
-                :high_school_graduation => graduation_hash })
-      else
-        enrollment = Enrollment.new({ :name => district_name,
-                :kindergarten_participation => participation_hash })
-      end
-      @enrollment_collection[district_name] = enrollment
+  def create_enrollment(school_hashes, district_name, participation_hash)
+    if school_hashes[1].nil? == false
+      graduation_hash = school_hashes[1][district_name]
+      enrollment = Enrollment.new({ :name => district_name,
+              :kindergarten_participation => participation_hash,
+              :high_school_graduation => graduation_hash })
+    else
+      enrollment = Enrollment.new({ :name => district_name,
+              :kindergarten_participation => participation_hash })
+    end
+  end
+
+  def valid_hs_data?(file_tree)
+    if file_tree[:enrollment][:high_school_graduation].nil? == false
+      high_school_file = file_tree[:enrollment][:high_school_graduation]
+      high_school_hashes = load_path(high_school_file)
     end
   end
 

@@ -17,12 +17,20 @@ class EconomicProfileRepository
     data_file = file_tree[:economic_profile]
       data_file.map do |key,file|
       contents = CSV.read file, headers: true, header_converters: :symbol
-      districts_sorted_by_time = contents.sort_by do |contents|
-        contents[:timeframe]
-      end
+      districts_sorted_by_time = sort_districts_by_time(contents)
       @data = determine_path(key, districts_sorted_by_time)
       create_single_repo(data)
     end
+    format_repos_and_create_economic_profile
+  end
+
+  def sort_districts_by_time(contents)
+    contents.sort_by do |contents|
+      contents[:timeframe]
+    end
+  end
+
+  def format_repos_and_create_economic_profile
     group_by_district!
     delete_name_in_repo!
     create_economic_profles!
