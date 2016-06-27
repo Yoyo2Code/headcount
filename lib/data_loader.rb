@@ -15,14 +15,12 @@ module DataLoader
   end
 
   def load_childhood_poverty(key, contents)
-    # formatted = make_childhood_poverty_data(contents)
-    formatted = contents.map do |row|
-      name   = name(row)
-      year   = time(row).to_i
-      data = float_data(row)
-      {name: name, year => data}
-    end
+    formatted = make_childhood_poverty_data(contents)
     districts = group_by_location(formatted)
+    format_without_name(key, districts)
+  end
+
+  def format_without_name(key, districts)
     districts.map do |name, data|
       formatted_data = delete_name(data)
       formatted_data = formatted_data.reduce({},:merge)
@@ -31,34 +29,47 @@ module DataLoader
     end
   end
 
-  # def make_childhood_poverty_data(contents)
-  #   contents.map do |row|
-  #     name   = name(row)
-  #     year   = time(row).to_i
-  #     data = float_data(row)
-  #     {name: name, year => data}
-  # end
-
-  def load_free_or_reduced_lunch(key, contents)
-    formatted_data = contents.map do |row|
+  def make_childhood_poverty_data(contents)
+    contents.map do |row|
       name   = name(row)
       year   = time(row).to_i
-      data   = float_data(row).to_f
-      displayed_format = row[:dataformat].to_sym
-        if percent_lunch_format?(displayed_format)
-          lunch_percent_input(name, year, displayed_format, data)
-        else
-          lunch_number_input(name, year, displayed_format, data)
-        end
+      data = float_data(row)
+      {name: name, year => data}
     end
-    districts = group_by_location(formatted_data)
+  end
+
+  def load_free_or_reduced_lunch(key, contents)
+      formatted_data      = format_lunch_data(contents)
+      districts           = group_by_location(formatted_data)
       districts_with_data = format_by_districts(key, districts)
-        hi = districts_with_data.map do |district|
-           raw_data = district[:free_or_reduced_price_lunch]
-            by_year = group_by_year(raw_data)
-        yearly_data = calculate_yearly_data(by_year)
-      district_name = district.first.last
-      {name: district_name, key => yearly_data}
+      create_lunch_data(districts_with_data, key)
+  end
+
+  def create_lunch_data(districts_with_data, key)
+      districts_with_data.map do |district|
+                 raw_data = district[:free_or_reduced_price_lunch]
+                  by_year = group_by_year(raw_data)
+              yearly_data = calculate_yearly_data(by_year)
+            district_name = district.first.last
+          {name: district_name, key => yearly_data}
+      end
+  end
+
+  def format_lunch_data(contents)
+    contents.map do |row|
+      name             = name(row)
+      year             = time(row).to_i
+      data             = float_data(row).to_f
+      formatted = row[:dataformat].to_sym
+        check_lunch_format(name, year, formatted, data)
+    end
+  end
+
+  def check_lunch_format(name, year, formatted, data)
+    if percent_format?(formatted)
+      lunch_percent_input(name, year, formatted, data)
+    else
+      lunch_number_input(name, year, formatted, data)
     end
   end
 
@@ -66,7 +77,7 @@ module DataLoader
     load_childhood_poverty(key, contents)
   end
 
-  def percent_lunch_format?(data_format)
+  def percent_format?(data_format)
     if data_format == :Percent
       true
     end
@@ -119,10 +130,14 @@ module DataLoader
           total_percent << single_data[year].values.first
         end
       end
-      number = truncate(calculate_total(total_number))
-      percent = truncate(calculate_total(total_percent))
-      {year => {percentage: percent, total: number}}
+      create_yearly_hash(year, total_number, total_percent)
     end.reduce({}, :merge)
+  end
+
+  def create_yearly_hash(year, total_number, total_percent)
+    number = truncate(calculate_total(total_number))
+    percent = truncate(calculate_total(total_percent))
+    {year => {percentage: percent, total: number}}
   end
 
   def has_number_as_symbol?(year, data)

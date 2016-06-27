@@ -65,7 +65,6 @@ class HeadcountAnalyst
       else
         correlation_for_single_district(district_name)
       end
-
     else
       district_array = name[:across]
       correlation_across_districts(district_array)
